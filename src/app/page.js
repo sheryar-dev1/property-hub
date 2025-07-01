@@ -163,7 +163,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 font-sans">
       <Header />
       {/* Hero Section */}
-      <section className="w-full relative overflow-hidden min-h-[60vh] flex items-center justify-center pb-24">
+      {/* <section className="w-full relative overflow-hidden min-h-[60vh] flex items-center justify-center pb-24">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 animate-gradient-x opacity-80 z-0"></div>
         <div className="absolute inset-0 bg-black/40 dark:bg-black/60 z-10 backdrop-blur-xl"></div>
         <div className="relative z-20 w-full max-w-5xl mx-auto px-8 py-20 sm:px-12 lg:px-20 text-center rounded-2xl shadow-2xl bg-white/20 dark:bg-gray-900/40 border border-white/30 dark:border-gray-800/60 backdrop-blur-2xl glassy-card">
@@ -187,7 +187,72 @@ export default function Home() {
             <a href="#services" className="px-8 py-4 bg-white/30 hover:bg-white/50 text-white font-bold rounded-xl shadow-xl border border-white/40 backdrop-blur-md hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300/40 text-lg text-center">Our Services</a>
           </div>
         </div>
-      </section>
+      </section> */}
+      <section className="hero-section mt-16" style={{ position: 'relative'  ,  height: '425px', width:"100%", overflow: 'hidden' }}>
+      {/* Video background */}
+      <video 
+        autoPlay 
+        loop 
+        muted 
+        playsInline
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          zIndex: 1
+        }}
+      >
+        <source src="https://thepropertycen.wpengine.com/wp-content/uploads/2020/01/TPC-Video.mp4" type="video/mp4" />
+      </video>
+      
+      {/* Overlay */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.35)',
+        zIndex: 2
+      }}></div>
+      
+      {/* Content */}
+      <div style={{
+        position: 'relative',
+        zIndex: 3,
+        color: 'white',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        padding: '0 20px'
+      }}>
+        <h1 className="font-bold mb-[10px] text-3xl md:text-4xl  " style={{ fontFamily: 'Prata' }}>
+       Almeezan Property Center
+        </h1>
+      
+        <p style={{ 
+          fontFamily: 'Lato', 
+        
+          lineHeight: '22px', 
+          maxWidth: '794px',
+          fontWeight: 300
+        }}
+        className="text-lg md:text-xl"
+        >
+          Our experienced real-estate team is dedicated to helping our clients navigate the challenges of homeownership, renting and investing so you can get the property you want.
+        </p>
+        <div className="mt-6 flex flex-col sm:flex-row justify-center gap-6 animate-fade-in delay-300">
+            <a href="#contact" className="px-8 py-4 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-blue-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-xl hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-pink-300/40 text-lg animate-bounce-slow text-center">Contact Now</a>
+            <a href="#services" className="px-8 py-4 bg-white/30 hover:bg-white/50 text-white font-bold rounded-xl shadow-xl border border-white/40 backdrop-blur-md hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300/40 text-lg text-center">Our Services</a>
+          </div>
+      </div>
+    </section>
       {/* Wavy SVG Divider - now outside the hero card, not overlapping */}
       <div className="w-full overflow-hidden leading-none -mt-8">
         <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-20">
