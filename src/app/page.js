@@ -232,7 +232,7 @@ export default function Home() {
         textAlign: 'center',
         padding: '0 20px'
       }}>
-        <h1 className="font-bold mb-[10px] text-xl md:text-4xl  " style={{ fontFamily: 'Prata' }}>
+        <h1 className="font-bold mb-[10px] text-3xl md:text-4xl  " style={{ fontFamily: 'Prata' }}>
        Almeezan Property Center
         </h1>
       
