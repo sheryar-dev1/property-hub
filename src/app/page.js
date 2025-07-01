@@ -3,34 +3,104 @@ import Image from "next/image";
 import FaqAccordion from "./FaqAccordion";
 import { supabase } from "./supabaseClient";
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Sexy Fixed Header
 function Header() {
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
   return (
-    <header className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-white/40 dark:bg-gray-900/60 border-b border-white/20 dark:border-gray-800/40 shadow-lg glassy-card2 transition-all">
+    <header className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-white dark:bg-gray-900/60 border-b border-white/20 dark:border-gray-800/40 shadow-lg glassy-card2 transition-all">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Image src="/office-building.svg" alt="Logo" width={40} height={40} className="drop-shadow-md" />
-          <span className="font-extrabold text-xl text-gray-900 dark:text-white tracking-tight">Property Hub</span>
-        </div>
+          <span className="font-extrabold text-xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-blue-600 tracking-tight">
+            Property Hub
+          </span>        </div>
         {/* Nav Links */}
         <nav className="hidden md:flex gap-8 text-lg font-medium">
           <a href="#" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-pink-400 transition-colors">Home</a>
           <a href="#services" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-pink-400 transition-colors">Services</a>
           <a href="#faq" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-pink-400 transition-colors">FAQ</a>
-          <a href="#testimonials" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-pink-400 transition-colors">Testimonials</a>
+          <a href="#Reviews" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-pink-400 transition-colors">Reviews</a>
           <a href="#contact" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-pink-400 transition-colors">Contact</a>
         </nav>
         {/* Contact Button */}
         <a href="#contact" className="ml-4 px-5 py-2 bg-gradient-to-r from-pink-500 to-blue-500 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-300 hidden md:inline-block">Contact Now</a>
         {/* Hamburger for mobile */}
-        <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors">
-          <svg className="w-7 h-7 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="md:hidden"
+        >
+          <button
+            className="text-gray-700 dark:text-gray-200 focus:outline-none"
+            onClick={() => setMobileNavOpen((open) => !open)}
+            aria-label={mobileNavOpen ? "Close navigation menu" : "Open navigation menu"}
+          >
+            {mobileNavOpen ? (
+              <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </motion.div>
       </div>
+      {/* Mobile Nav Dropdown */}
+      <AnimatePresence>
+        {mobileNavOpen && (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            className="fixed inset-0 z-40 bg-white/80 dark:bg-gray-900/90 backdrop-blur-2xl flex flex-col md:hidden"
+          >
+            <div className="sticky top-0 left-0 w-full flex items-center justify-between px-6 py-5 bg-white dark:bg-gray-900/90 backdrop-blur-xl shadow-md z-50 border-b border-gray-200 dark:border-gray-800">
+            <div className="flex items-center gap-3">
+          <div className="p-2 bg-gradient-to-br from-pink-500 to-blue-600 rounded-lg shadow-lg">
+            <Image 
+              src="/office-building.svg" 
+              alt="Logo" 
+              width={28} 
+              height={28} 
+              className="filter drop-shadow-md"
+            />
+          </div>
+          <span className="font-extrabold text-xl bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-blue-600 tracking-tight">
+            Property Hub
+          </span>
+        </div>
+        <button
+          className="p-2 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg hover:scale-110 transition-transform duration-200 group"
+          onClick={() => setMobileNavOpen(false)}
+          aria-label="Close navigation menu"
+        >
+          <div className="w-6 h-6 relative">
+            <span className="absolute top-1/2 left-1/2 w-5 h-0.5 bg-gray-800 dark:bg-gray-200 transform -translate-x-1/2 -translate-y-1/2 rotate-45 group-hover:bg-pink-500 transition-colors"></span>
+            <span className="absolute top-1/2 left-1/2 w-5 h-0.5 bg-gray-800 dark:bg-gray-200 transform -translate-x-1/2 -translate-y-1/2 -rotate-45 group-hover:bg-pink-500 transition-colors"></span>
+          </div>
+        </button>
+            </div>
+            <nav className="flex-1 flex flex-col justify-center items-center gap-2  bg-white dark:bg-gray-900/90 backdrop-blur-xl shadow-md z-50 border-b border-gray-200 dark:border-gray-800">
+              <a href="#" className="py-4 w-full text-xl font-semibold text-gray-900 dark:text-white text-center hover:bg-blue-100 dark:hover:bg-gray-800 rounded-xl transition-colors" onClick={() => setMobileNavOpen(false)}>Home</a>
+              <a href="#services" className="py-4 w-full text-xl font-semibold text-gray-900 dark:text-white text-center hover:bg-blue-100 dark:hover:bg-gray-800 rounded-xl transition-colors" onClick={() => setMobileNavOpen(false)}>Services</a>
+              <a href="#faq" className="py-4 w-full text-xl font-semibold text-gray-900 dark:text-white text-center hover:bg-blue-100 dark:hover:bg-gray-800 rounded-xl transition-colors" onClick={() => setMobileNavOpen(false)}>FAQ</a>
+              <a href="#Reviews" className="py-4 w-full text-xl font-semibold text-gray-900 dark:text-white text-center hover:bg-blue-100 dark:hover:bg-gray-800 rounded-xl transition-colors" onClick={() => setMobileNavOpen(false)}>Reviews</a>
+              {/* <a href="#contact" className="py-4 w-full text-xl font-semibold text-gray-900 dark:text-white text-center hover:bg-blue-100 dark:hover:bg-gray-800 rounded-xl transition-colors" onClick={() => setMobileNavOpen(false)}>Contact</a> */}
+            </nav>
+            <div className="px-6 pb-8 pt-4 bg-white dark:bg-gray-900/90 backdrop-blur-xl shadow-md z-50 border-b border-gray-200 dark:border-gray-800">
+              <a 
+                onClick={() => setMobileNavOpen(false)}
+               href="#contact" className="w-full block px-5 py-4 bg-gradient-to-r from-pink-500 to-blue-500 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-300 text-center text-lg">Contact Now</a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
@@ -340,9 +410,11 @@ export default function Home() {
               rows={4}
               disabled={loading}
             />
+                          <span className="text-gray-700 dark:text-gray-200 flex w-full justify-center font-semibold   md:hidden">Your Rating:</span>
+
             {/* Star Rating Input */}
             <div className="flex items-center gap-3 justify-center">
-              <span className="text-gray-700 dark:text-gray-200 font-semibold">Your Rating:</span>
+              <span className="text-gray-700 dark:text-gray-200 font-semibold md:block hidden">Your Rating:</span>
               {[1,2,3,4,5].map(star => (
                 <button
                   type="button"
@@ -376,7 +448,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section (now shows real user reviews) */}
-      <section className="w-full bg-gray-50 dark:bg-gray-900 py-16">
+      <section  id="Reviews" className="w-full bg-gray-50 dark:bg-gray-900 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Client Success Stories</h2>
@@ -501,7 +573,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Email</h3>
-                    <p className="text-blue-600 dark:text-blue-400 font-semibold">info@propertyhub.com</p>
+                    <p className="text-blue-600 dark:text-blue-400 font-semibold">almezanproperty@gmail.com</p>
                     <p className="text-gray-600 dark:text-gray-300 text-sm">We respond within 24 hours</p>
                   </div>
                 </div>
@@ -533,25 +605,25 @@ export default function Home() {
             <Image src="/office-building.svg" alt="Logo" width={40} height={40} className="drop-shadow-md" />
 
               <p className="text-gray-300">
-                Your trusted partner for all property needs in Pakistan since 2008.
+                Your trusted partner for all property needs in Pakistan since 2000.
               </p>
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Services</h3>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Property Buying</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Property Selling</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Rental Services</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
+                <li><a href="#services" className="hover:text-white transition-colors">Property Buying</a></li>
+                <li><a href="#services" className="hover:text-white transition-colors">Property Selling</a></li>
+                <li><a href="#services" className="hover:text-white transition-colors">Rental Services</a></li>
+                <li><a href="#services" className="hover:text-white transition-colors">Documentation</a></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-bold mb-4">Quick Links</h3>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Testimonials</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Home</a></li>
+                <li><a href="#Reviews" className="hover:text-white transition-colors">Reviews</a></li>
+                <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
+                <li><a href="#contact" className="hover:text-white transition-colors">Contact</a></li>
               </ul>
             </div>
             <div>
@@ -573,7 +645,7 @@ export default function Home() {
                   </svg>
                 </a>
               </div>
-              <p className="text-gray-300">
+              {/* <p className="text-gray-300">
                 Subscribe to our newsletter for property updates
               </p>
               <div className="mt-2 flex">
@@ -583,7 +655,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
