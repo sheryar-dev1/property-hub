@@ -4,6 +4,7 @@ import FaqAccordion from "./FaqAccordion";
 import { supabase } from "./supabaseClient";
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { RiThumbUpLine, RiThumbUpFill } from 'react-icons/ri';
 
 // Sexy Fixed Header
 function Header() {
@@ -117,18 +118,86 @@ export default function Home() {
   const [visibleReviews, setVisibleReviews] = React.useState(3);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [selectedService, setSelectedService] = React.useState(null);
+  // Add state for 'Read more' feature in reviews
+  const [showFullReview, setShowFullReview] = React.useState({});
+  // Add state for likes per review (from Supabase)
+  const [likes, setLikes] = React.useState({});
+  // Track liked reviews in localStorage
+  const [likedReviews, setLikedReviews] = React.useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('likedReviews');
+      return stored ? JSON.parse(stored) : [];
+    }
+    return [];
+  });
 
-  // Fetch reviews from Supabase
+  // Fetch reviews and likes from Supabase
   React.useEffect(() => {
-    const fetchReviews = async () => {
-      const { data, error } = await supabase
+    const fetchReviewsAndLikes = async () => {
+      // Fetch reviews
+      const { data: reviewsData, error: reviewsError } = await supabase
         .from("reviews")
         .select("id, name, review, rating, created_at")
         .order("created_at", { ascending: false });
-      if (!error) setReviews(data);
+      if (!reviewsError) setReviews(reviewsData);
+      // Fetch likes
+      const { data: likesData, error: likesError } = await supabase
+        .from("likes")
+        .select("review_id, count");
+      if (!likesError && likesData) {
+        // Map likes by review_id
+        const likesMap = {};
+        likesData.forEach(like => {
+          likesMap[like.review_id] = like.count;
+        });
+        setLikes(likesMap);
+      }
     };
-    fetchReviews();
+    fetchReviewsAndLikes();
   }, []);
+
+  // Like/unlike handler
+  const handleLike = async (reviewId) => {
+    const isLiked = likedReviews.includes(reviewId);
+    if (isLiked) {
+      // Unlike: decrement count in Supabase (min 0), update local state and localStorage
+      const currentCount = likes[reviewId] || 0;
+      const newCount = currentCount > 0 ? currentCount - 1 : 0;
+      await supabase
+        .from("likes")
+        .update({ count: newCount })
+        .eq("review_id", reviewId);
+      setLikes(prev => ({ ...prev, [reviewId]: newCount }));
+      const updatedLiked = likedReviews.filter(id => id !== reviewId);
+      setLikedReviews(updatedLiked);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('likedReviews', JSON.stringify(updatedLiked));
+      }
+    } else {
+      // Like: increment count in Supabase, update local state and localStorage
+      const { data, error } = await supabase
+        .from("likes")
+        .update({ count: (likes[reviewId] || 0) + 1 })
+        .eq("review_id", reviewId)
+        .select();
+      if (error || !data || data.length === 0) {
+        // If no row exists, insert new
+        const { error: insertError } = await supabase
+          .from("likes")
+          .insert([{ review_id: reviewId, count: 1 }]);
+        if (!insertError) {
+          setLikes(prev => ({ ...prev, [reviewId]: 1 }));
+        }
+      } else {
+        setLikes(prev => ({ ...prev, [reviewId]: (prev[reviewId] || 0) + 1 }));
+      }
+      const updatedLiked = [...likedReviews, reviewId];
+      setLikedReviews(updatedLiked);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('likedReviews', JSON.stringify(updatedLiked));
+      }
+    }
+  };
 
   // Handle review submit
   const handleReviewSubmit = async (e) => {
@@ -522,29 +591,53 @@ export default function Home() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {reviews.length === 0 && <p className="text-gray-500 text-center col-span-3">No reviews yet.</p>}
-            {reviews.slice(0, visibleReviews).map((r, index) => (
-              <div key={r.id || index} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 relative overflow-hidden group">
-                {/* Quote Icon */}
-                <svg className="absolute top-6 right-6 w-10 h-10 text-pink-200 dark:text-pink-400 opacity-30 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M7.17 6A5.001 5.001 0 002 11c0 2.21 1.79 4 4 4 .34 0 .67-.04.99-.1l-.49 2.45A1 1 0 007.47 19h2.02a1 1 0 00.99-.86l.5-2.5A5.978 5.978 0 0013 11c0-2.76-2.24-5-5-5zm9 0a5.001 5.001 0 00-5 5c0 2.21 1.79 4 4 4 .34 0 .67-.04.99-.1l-.49 2.45A1 1 0 0016.47 19h2.02a1 1 0 00.99-.86l.5-2.5A5.978 5.978 0 0022 11c0-2.76-2.24-5-5-5z" />
+            {reviews.length === 0 && (
+              <div className="col-span-3 flex flex-col items-center justify-center text-gray-400 py-12">
+                <svg className="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-500 via-pink-400 to-purple-500 flex items-center justify-center text-xl font-bold text-white shadow-lg">
+                <span>No reviews yet. Be the first to share your experience!</span>
+              </div>
+            )}
+            {reviews.slice(0, visibleReviews).map((r) => (
+              <div
+                key={r.id}
+                className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-4 max-w-md mx-auto flex flex-col justify-between min-h-[180px]"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-700 dark:text-gray-200">
                     {r.name?.split(' ').map(w => w[0]).join('').toUpperCase()}
                   </div>
-                  <div className="ml-4">
-                    <h4 className="font-bold text-gray-900 dark:text-white">{r.name}</h4>
-                    <p className="text-gray-500 text-sm">{new Date(r.created_at).toLocaleString()}</p>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white text-sm">{r.name}</div>
+                    <div className="text-xs text-gray-400">{new Date(r.created_at).toLocaleDateString()}</div>
                   </div>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 italic text-lg mb-4">"{r.review}"</p>
-                <div className="mt-2 flex text-yellow-400">
+                <div className="text-gray-700 dark:text-gray-200 text-sm mb-3 line-clamp-4">{r.review}</div>
+                <div className="flex items-center gap-2 mt-auto">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className={`w-6 h-6 fill-current ${i < r.rating ? 'text-yellow-400' : 'text-gray-300'}`} viewBox="0 0 20 20">
+                    <svg
+                      key={i}
+                      className={`w-4 h-4 ${i < r.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                      fill={i < r.rating ? 'currentColor' : 'none'}
+                      stroke="currentColor"
+                      viewBox="0 0 20 20"
+                    >
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
+                  <button
+                    className="flex items-center gap-1 ml-2 focus:outline-none"
+                    onClick={() => handleLike(r.id)}
+                    type="button"
+                  >
+                    {likedReviews.includes(r.id) ? (
+                      <RiThumbUpFill className="w-4 h-4 text-blue-600" />
+                    ) : (
+                      <RiThumbUpLine className="w-4 h-4 text-blue-600" />
+                    )}
+                    <span className="text-xs text-gray-700 dark:text-gray-200">{likes[r.id] || 0}</span>
+                  </button>
                 </div>
               </div>
             ))}
@@ -592,7 +685,7 @@ export default function Home() {
       </section>
 
       {/* Contact & Map Section */}
-      <section id="contact" className="w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 md:py-24">
+      <section id="contact" className="w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-12 md:py-24">
         <div className="max-w-7xl md:mx-auto  md:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Contact Info Card */}
