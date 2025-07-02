@@ -342,7 +342,7 @@ export default function Home() {
           ))}
         </div>
         {/* Wavy Divider for next section */}
-        <div className="w-full overflow-hidden leading-none absolute bottom-0 left-0">
+        <div className="w-full overflow-hidden leading-none absolute bottom-0 left-0 hidden md:block">
           <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-16">
             <path d="M0,0V46.29c47.29,22,104.09,29,158,17.39C267.75,44.15,327.29,0,385,0s117.25,44.15,227,63.68C665.91,92,723.71,85,770,63.68c53.91-11.61,110.71-4.61,158,17.39V0Z" opacity=".25" className="fill-purple-100 dark:fill-gray-900"></path>
             <path d="M0,0V15.81C47.29,37.8,104.09,44.8,158,33.19C267.75,14.95,327.29,0,385,0s117.25,14.95,227,33.19C665.91,51.8,723.71,44.8,770,33.19c53.91-11.61,110.71-4.61,158,17.39V0Z" opacity=".5" className="fill-purple-100 dark:fill-gray-900"></path>
@@ -398,8 +398,8 @@ export default function Home() {
       </section>
 
       {/* Commission Section */}
-      <section className="w-full max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-800 dark:to-blue-900 rounded-2xl shadow-xl overflow-hidden">
+      <section className="w-full max-w-7xl md:mx-auto md:py-16 md:px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-800 dark:to-blue-900 md:rounded-2xl shadow-xl overflow-hidden">
           <div className="p-8 md:p-12 lg:flex">
             <div className="lg:w-1/2">
               <h2 className="text-3xl font-bold text-white mb-4">Fair & Transparent Pricing</h2>
@@ -447,8 +447,8 @@ export default function Home() {
       </section>
 
       {/* Add Review Section */}
-      <section className="w-full max-w-2xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <div className="relative bg-gradient-to-br from-pink-200/60 via-blue-100/60 to-purple-200/60 dark:from-gray-900/80 dark:via-gray-800/80 dark:to-gray-900/80 rounded-3xl shadow-2xl p-10 mb-12 border border-white/30 dark:border-gray-800/60 backdrop-blur-xl glassy-card animate-fade-in-up">
+      <section className="w-full md:max-w-2xl md:mx-auto py-16 md:px-4 sm:px-6 lg:px-8">
+        <div className="relative bg-gradient-to-br from-pink-200/60 via-blue-100/60 to-purple-200/60 dark:from-gray-900/80 dark:via-gray-800/80 dark:to-gray-900/80  shadow-2xl p-10 mb-12 border border-white/30 dark:border-gray-800/60 backdrop-blur-xl glassy-card2 md:rounded-3xl animate-fade-in-up">
           <div className="flex flex-col items-center mb-6">
             <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-500 via-pink-400 to-purple-500 flex items-center justify-center shadow-xl mb-4 animate-float">
               <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -592,11 +592,11 @@ export default function Home() {
       </section>
 
       {/* Contact & Map Section */}
-      <section id="contact" className="w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="contact" className="w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 md:py-24">
+        <div className="max-w-7xl md:mx-auto  md:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Contact Info Card */}
-            <div className="glassy-card bg-white/70 dark:bg-gray-900/70 rounded-3xl shadow-2xl p-12 animate-fade-in-up">
+            <div className="glassy-card2 md:rounded-3xl md:bg-white/70 md:dark:bg-gray-900/70  shadow-2xl p-12 animate-fade-in-up">
               <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">Get In Touch</h2>
               <p className="text-lg text-gray-700 dark:text-gray-300 mb-10">
                 Have questions or ready to start your property journey? Reach out to us through any of these channels.
@@ -645,7 +645,7 @@ export default function Home() {
               </div>
             </div>
             {/* Map Card */}
-            <div className="glassy-card bg-white/70 dark:bg-gray-900/70 rounded-3xl shadow-2xl overflow-hidden h-96 animate-fade-in-up delay-200 flex items-center justify-center">
+            <div className="glassy-card2 bg-white/70 dark:bg-gray-900/70 md:rounded-3xl shadow-2xl overflow-hidden h-96 animate-fade-in-up delay-200 flex items-center justify-center">
               <iframe
                 title="Office Location"
                 src="https://maps.google.com/maps?q=Mansehra%20Lala%20Ayub%20Market&t=&z=15&ie=UTF8&iwloc=&output=embed"
@@ -655,7 +655,7 @@ export default function Home() {
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full rounded-3xl"
+                className="w-full h-full md:rounded-3xl"
               ></iframe>
             </div>
           </div>
